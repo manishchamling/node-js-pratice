@@ -1,15 +1,20 @@
 const CC = require("currency-converter-lt");
-const fromCurrency = "USD";
-const toCurrency = "NPR";
-const amountToConvert = 1;
-
-const currencyConverter = new CC({
-  from: fromCurrency,
-  to: toCurrency,
-  amount: amountToConvert,
-});
-currencyConverter.convert().then((response) => {
-  console.log(
-    `${amountToConvert} ${fromCurrency} is equal to ${response} ${toCurrency}`
-  );
-});
+const http = require("http");
+const convert = (amount, from, to) => {
+  const server = http
+    .createServer((req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html" }); //file type
+      const currencyConverter = new CC();
+      currencyConverter
+        .from(from)
+        .to(to)
+        .amount(amount)
+        .convert()
+        .then((response) => {
+          res.end(`${amount} ${from} is equal to ${response} ${to}`);
+        });
+    })
+    .listen(8000);
+};
+convert(1, "JPY", "INR");
+console.log("App is running");
